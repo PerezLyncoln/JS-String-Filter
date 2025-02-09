@@ -9,7 +9,6 @@ function handleFile(event) {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
 
-        // Assuming the data is in the first sheet
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
@@ -22,15 +21,21 @@ function handleFile(event) {
 
 function extractStrings(data) {
     const stringList = document.getElementById('stringList');
-    stringList.innerHTML = ''; // Clear the list
+    stringList.innerHTML = ''; 
 
-    data.forEach(row => {
+    for (let i = 1; i < data.length; i++) {
+        const row = data[i];
         row.forEach(cell => {
-            if (typeof cell === 'string' && cell.length >= 5) {
+            if (
+                typeof cell === 'string' &&
+                cell.length >= 5 &&
+                cell.toLowerCase() !== 'true' &&
+                cell.toLowerCase() !== 'false'
+            ) {
                 const li = document.createElement('li');
                 li.textContent = cell;
                 stringList.appendChild(li);
             }
         });
-    });
+    }
 }
